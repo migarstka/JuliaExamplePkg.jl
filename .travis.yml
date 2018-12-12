@@ -1,0 +1,30 @@
+language: julia
+os:
+  - linux
+  - osx
+julia:
+  - nightly
+  - 1.0
+
+notifications:
+  email: false
+
+git:
+  depth: 3
+
+## uncomment the following lines to allow failures on nightly julia
+## (tests will run but not make your overall status red)
+matrix:
+  allow_failures:
+    - julia: nightly
+
+codecov: true
+coveralls: true
+
+script:
+  if VERSION >= v"0.7.0-DEV.5183"
+    using Pkg
+  end
+  Pkg.clone(pwd())
+  Pkg.build("JuliaExamplePkg")
+  Pkg.test("JuliaExamplePkg", coverage=true)
