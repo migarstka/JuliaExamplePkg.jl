@@ -22,9 +22,5 @@ codecov: true
 coveralls: true
 
 script:
-  if VERSION >= v"0.7.0-DEV.5183"
-    using Pkg
-  end
-  Pkg.clone(pwd())
-  Pkg.build("JuliaExamplePkg")
-  Pkg.test("JuliaExamplePkg", coverage=true)
+   - julia -e 'if VERSION >= v"0.7.0-" using Pkg; end; Pkg.clone(pwd()); Pkg.build("JuliaExamplePkg"); Pkg.test("JuliaExamplePkg"; coverage=true)';
+
