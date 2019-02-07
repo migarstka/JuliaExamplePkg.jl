@@ -1,29 +1,26 @@
 language: julia
 os:
-  - linux
+    - linux
+#   - osx # Disable to speed up CI. JuMP has no binary dependency so the result
+          # with osx and linux should be similar.
 julia:
-  - nightly
-  - 1.0
-
+    - 1.0
+# This is left as an example for the next big version switch.
+# matrix:
+#     allow_failures:
+#         - julia: 0.7
 notifications:
-  email: false
+    email: false
+sudo: false
 
-## uncomment the following lines to allow failures on nightly julia
-## (tests will run but not make your overall status red)
-matrix:
-  allow_failures:
-    - julia: nightly
-
-after success:
-   - julia -e 'if VERSION >= v"0.7.0-" using Pkg; end; Pkg.clone(pwd()); Pkg.build("JuliaExamplePkg"); Pkg.test("JuliaExamplePkg"; coverage=true)';
-
+after_success:
+    - julia -e 'using Pkg; Pkg.add("Coverage"); cd(Pkg.dir("JuliaExamplePkg")); using Coverage; Coveralls.submit(process_folder()); Codecov.submit(process_folder())'
 jobs:
   include:
     - stage: "Documentation"
       julia: 1.0
       os: linux
       script:
-        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
-                                               Pkg.instantiate()'
-        - julia --project=docs/ docs/make.jl
+        - julia --project=docs -e 'using Pkg; Pkg.instantiate(); Pkg.add(PackageSpec(path=pwd()))'
+        - julia --project=docs --color=yes docs/make.jl
       after_success: skip
