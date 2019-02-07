@@ -14,10 +14,7 @@ matrix:
   allow_failures:
     - julia: nightly
 
-codecov: true
-coveralls: true
-
-script:
+after success:
    - julia -e 'if VERSION >= v"0.7.0-" using Pkg; end; Pkg.clone(pwd()); Pkg.build("JuliaExamplePkg"); Pkg.test("JuliaExamplePkg"; coverage=true)';
 
 jobs:
